@@ -1,0 +1,25 @@
+---
+- name: install docker and all environment
+  hosts: all
+  become: yes
+
+  tasks:
+  - name: update all environment
+    shell: sudo apt update
+
+  - name: add https for debian
+    shell: sudo apt install apt-transport-https
+
+  - name: add keys for gpg downloads
+    shell: curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add
+
+  - name: Add specified repository into sources list
+    apt_repository:
+      repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
+      state: present
+
+  - name: reupdate all repository
+    shell: sudo apt update
+
+  - name: install docker-ce (community edition)
+    apt: name=docker-ce state=latest
